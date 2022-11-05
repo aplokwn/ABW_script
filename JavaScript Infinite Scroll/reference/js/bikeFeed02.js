@@ -1,7 +1,7 @@
 let items
 
 async function load () {
-  let url = 'https://api.npoint.io/fd08845d01c4506fe3fb'
+  let url = 'https://api.npoint.io/fd08845d01c4506fe3fb/?page=1&limit=10'
   items = await (await fetch(url)).json()
   //console.log(items);
 
