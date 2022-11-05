@@ -1,109 +1,93 @@
-(function () {
+//Target bike container
+const bikesEl = document.querySelector('.bikes')
+const loaderEl = document.querySelector('.loader')
 
-  const quotesEl = document.querySelector('.quotes')
-  const loaderEl = document.querySelector('.loader')
+//set limit of bike feed we will load
+let limit = 9
+let page = 1
 
-  // get the quotes from API
-  const getQuotes = async (page, limit) => {
-    //const API_URL = `https://api.javascripttutorial.net/v1/quotes/?page=${page}&limit=${limit}`
+console.log("run")
 
-    //https://my-json-server.typicode.com/aplokwn/AWS_JSON/bikes/?
+//Fetch the bike data from api
+async function getBikes () {
+  //const API_URL = `https://my-json-server.typicode.com/aplokwn/AWS_JSON/bikes?_page=${page}&limit=${limit}`
+  const response = await fetch(
+    `https://my-json-server.typicode.com/aplokwn/AWS_JSON/bikes?_page=${page}&limit=${limit}`
+  )
+  //Turn responce into json
+  const data = await response.json()
+  console.log("reach")
+  console.log(data)
+  return data
 
-    const API_URL = `https://my-json-server.typicode.com/aplokwn/AWS_JSON/bikes/??page=${page}&limit=${limit}`
-
-
-    //const API_URL = `https://api.javascripttutorial.net/v1/quotes/?page=${page}&limit=${limit}`
-    const response = await fetch(API_URL)
-    // handle 404
-    if (!response.ok) {
-      throw new Error(`An error occurred: ${response.status}`)
-    }
-    return await response.json()
-  }
-
-  // show the quotes
-  const showQuotes = (quotes) => {
-    quotes.forEach(quote => {
-      const quoteEl = document.createElement('div')
-      quoteEl.classList.add('content')
-
-      console.log(quote.id)
-
-      quoteEl.innerHTML = `
-          <img src="https://pedegoelectricbikes.ca/wp-content/uploads/2022/07/Pedego-Avenue-Step-Thru-in-Ocean-Teal.jpg">
-          <span>${quote.id})</span>
-          <h3>Bike Information</h3>
-          ${quote.maker}
-          <footer>${quote.price}</footer>
-      `
-
-      quotesEl.appendChild(quoteEl)
-    })
-  }
-
-  const hideLoader = () => {
-    loaderEl.classList.remove('show')
-  }
-
-  const showLoader = () => {
-    loaderEl.classList.add('show')
-  }
-
-  const hasMoreQuotes = (page, limit, total) => {
-    const startIndex = (page - 1) * limit + 1
-    return total === 0 || startIndex < total
-  }
-
-  // load quotes
-  const loadQuotes = async (page, limit) => {
-
-    // show the loader
-    showLoader()
-
-    // 0.5 second later
-    setTimeout(async () => {
-      try {
-        // if having more quotes to fetch
-        if (hasMoreQuotes(page, limit, total)) {
-          // call the API to get quotes
-          const response = await getQuotes(page, limit)
-          // show quotes
-          showQuotes(response.data)
-          // update the total
-          total = response.total
-        }
-      } catch (error) {
-        console.log(error.message)
-      } finally {
-        hideLoader()
-      }
-    }, 500)
-
-  }
-
-  // control variables
-  let currentPage = 1
-  const limit = 10
-  let total = 0
+}
 
 
-  window.addEventListener('scroll', () => {
-    const {
-      scrollTop,
-      scrollHeight,
-      clientHeight
-    } = document.documentElement
 
-    if (scrollTop + clientHeight >= scrollHeight - 5 &&
-      hasMoreQuotes(currentPage, limit, total)) {
-      currentPage++
-      loadQuotes(currentPage, limit)
-    }
-  }, {
-    passive: true
+/*
+Json reference
+{
+  "id": 1,
+  "bikeId": "ABS-001",
+  "title": "json-server",
+  "maker": "Argon18",
+  "model": "Gallium Pro Disc",
+  "price": 200,
+  "photoPath": "https://raw.githubusercontent.com/aplokwn/AWS_JSON/main/bikes/bike001.jpg"
+}
+*/
+
+
+
+// Render data into element
+async function showBikes () {
+  const bikes = await getBikes()
+
+  //Create element for each bike
+  bikes.forEach(bike => {
+    const bikeEl = document.createElement('div')
+    bikeEl.classList.add('content')
+    bikeEl.innerHTML = `
+            <div class="imagebox"><img src= "${bike.photoPath}" width="250" height="220" alt="bike"></div>
+            <h3>Bike Information</h3>
+            <p class="bikeInfo">Bike Make: ${bike.maker}</p>
+            <p class="bikeInfo">Bike Model: ${bike.model}</p>
+            <h6>$${bike.price}</h6>
+            </div>
+            <button class="buy">Bike id: ${bike.bikeId}</button>
+            `
+    bikesEl.appendChild(bikeEl)
   })
+}
 
-  // initialize
-  loadQuotes(currentPage, limit)
+// Add loader animation and fetch more bikes
+function showLoading () {
+  loaderEl.classList.add('show')
 
-})()
+  // after sometime the loader will remove
+  setTimeout(() => {
+    loaderEl.classList.remove('show')
+
+    // Show more bikes after loader
+    setTimeout(() => {
+      page++
+      showBikes()
+    }, 300)
+  }, 1000)
+}
+
+
+
+//Return all bikes to HTML
+showBikes()
+
+
+// Add an event listener on scroll to trigger loader
+window.addEventListener('scroll', () => {
+  const { scrollTop, scrollHeight, clientHeight } = document.documentElement
+
+  if (scrollTop + clientHeight >= scrollHeight - 5) {
+    showLoading()
+  }
+
+})
