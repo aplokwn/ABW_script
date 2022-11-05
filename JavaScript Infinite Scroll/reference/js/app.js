@@ -5,7 +5,7 @@
 
   // get the quotes from API
   const getQuotes = async (page, limit) => {
-    const API_URL = `https://api.javascripttutorial.net/v1/quotes/?page=${page}&limit=${limit}`
+    const API_URL = `https://my-json-server.typicode.com/aplokwn/ABS_JSON/bikes/?page=${page}&limit=${limit}`
     const response = await fetch(API_URL)
     // handle 404
     if (!response.ok) {
@@ -20,10 +20,12 @@
       const quoteEl = document.createElement('blockquote')
       quoteEl.classList.add('quote')
 
+      console.log(quote.id)
+
       quoteEl.innerHTML = `
           <span>${quote.id})</span>
-          ${quote.quote}
-          <footer>${quote.author}</footer>
+          ${quote.maker}
+          <footer>${quote.price}</footer>
       `
 
       quotesEl.appendChild(quoteEl)

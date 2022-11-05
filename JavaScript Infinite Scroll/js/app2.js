@@ -8,6 +8,8 @@ async function load () {
   items = await (await fetch(url)).json()
   //console.log(items);
 
+  //https://api.npoint.io/2a88e19b4c419790845d/bikes/0
+
   try {
     items = await (await fetch(url)).json()
   } catch (e) {

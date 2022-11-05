@@ -1,24 +1,109 @@
-let items
-const url = 'https://api.npoint.io/fd08845d01c4506fe3fb'
+(function () {
 
-const bikesEl = document.querySelector('.bikes')
-const loaderEl = document.querySelector('.loader')
+  const quotesEl = document.querySelector('.quotes')
+  const loaderEl = document.querySelector('.loader')
 
-function loadBike (bikeItem = 9) {
-  let i = 0
-  while (i < bikeItem) {
-    const bikeEl = document.createElement('div')
-    bikeEl.classList.add('content')
-    bikeEl.innerHTML = `
-            <span>Bike Make: ${p.maker}</span>
-            <h3>Bike Information</h3>
-            <p class="bikeInfo">Bike Make: ${p.maker}</p>
-            <p class="bikeInfo">Bike Model: ${p.model}</p>
-            <footer>$${p.price}</footer>
-        `
-    bikesEl.appendChild(bikeEl)
-    i++
+  // get the quotes from API
+  const getQuotes = async (page, limit) => {
+    //const API_URL = `https://api.javascripttutorial.net/v1/quotes/?page=${page}&limit=${limit}`
+
+    //https://my-json-server.typicode.com/aplokwn/AWS_JSON/bikes/?
+
+    const API_URL = `https://my-json-server.typicode.com/aplokwn/AWS_JSON/bikes/??page=${page}&limit=${limit}`
+
+
+    //const API_URL = `https://api.javascripttutorial.net/v1/quotes/?page=${page}&limit=${limit}`
+    const response = await fetch(API_URL)
+    // handle 404
+    if (!response.ok) {
+      throw new Error(`An error occurred: ${response.status}`)
+    }
+    return await response.json()
   }
-}
 
-loadBike()
+  // show the quotes
+  const showQuotes = (quotes) => {
+    quotes.forEach(quote => {
+      const quoteEl = document.createElement('div')
+      quoteEl.classList.add('content')
+
+      console.log(quote.id)
+
+      quoteEl.innerHTML = `
+          <img src="https://pedegoelectricbikes.ca/wp-content/uploads/2022/07/Pedego-Avenue-Step-Thru-in-Ocean-Teal.jpg">
+          <span>${quote.id})</span>
+          <h3>Bike Information</h3>
+          ${quote.maker}
+          <footer>${quote.price}</footer>
+      `
+
+      quotesEl.appendChild(quoteEl)
+    })
+  }
+
+  const hideLoader = () => {
+    loaderEl.classList.remove('show')
+  }
+
+  const showLoader = () => {
+    loaderEl.classList.add('show')
+  }
+
+  const hasMoreQuotes = (page, limit, total) => {
+    const startIndex = (page - 1) * limit + 1
+    return total === 0 || startIndex < total
+  }
+
+  // load quotes
+  const loadQuotes = async (page, limit) => {
+
+    // show the loader
+    showLoader()
+
+    // 0.5 second later
+    setTimeout(async () => {
+      try {
+        // if having more quotes to fetch
+        if (hasMoreQuotes(page, limit, total)) {
+          // call the API to get quotes
+          const response = await getQuotes(page, limit)
+          // show quotes
+          showQuotes(response.data)
+          // update the total
+          total = response.total
+        }
+      } catch (error) {
+        console.log(error.message)
+      } finally {
+        hideLoader()
+      }
+    }, 500)
+
+  }
+
+  // control variables
+  let currentPage = 1
+  const limit = 10
+  let total = 0
+
+
+  window.addEventListener('scroll', () => {
+    const {
+      scrollTop,
+      scrollHeight,
+      clientHeight
+    } = document.documentElement
+
+    if (scrollTop + clientHeight >= scrollHeight - 5 &&
+      hasMoreQuotes(currentPage, limit, total)) {
+      currentPage++
+      loadQuotes(currentPage, limit)
+    }
+  }, {
+    passive: true
+  })
+
+  // initialize
+  loadQuotes(currentPage, limit)
+
+})()
