@@ -8,10 +8,10 @@
 
   </a>
 
-<h3 align="center">Spring Boot Hello World + RESTful Sample</h3>
+<h3 align="center">Alberta Bike Swap Bike Feed Demo</h3>
 
   <p align="center">
-    Spring Boot Hello World & RESTful Sample for in-class tutorial blog
+    Demo page for Alberta Bike Swap Bike Feed with JavaScript Infinite Scroll
     <br />
     <br />
     <br />
@@ -63,30 +63,23 @@
 
 ## Getting Started
 
-<p>This is an example code of a intro Spring Boot project with a Hello World and RESTful page.</p>
+<p>This is an example webpage of Alberta Bike Swap Bike Feed with JavaScript Infinite Scroll fetching a JSON API.</p>
+<p>Previously code with Java Servlet, JSP and Gson. Rebuild with JavaScript as request.</p>
 
 ### Prerequisites
 
-For building and running the application you need:
-
-- [JDK 1.8](https://www.oracle.com/java/technologies/downloads/#java8)
-- [Maven 3](https://maven.apache.org/)
-- Prefer IDE: [Eclipse](https://www.eclipse.org/ide/)
-  <br/><br/>
+No special requirements for runing this demo.
+<br/><br/>
 
 ### Installation
 
-Running the project locally: to execute the main method in the ca.sait.itsd.HelloWorld01Application.Application class from your IDE.
+Running the project locally:
 
-1. Download the repo
+1. Download the repo.
 
-2. Install Spring Boot Plugin
-3. Unzip then import the project to IDE
+2. Unzip the projecct.
 
-4. Run the project, the project can be reached at
-
-- http://localhost:8085/
-- http://localhost:8085/user
+3. Run the project with broswer.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
